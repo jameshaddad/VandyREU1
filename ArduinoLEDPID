@@ -1,0 +1,36 @@
+#include <PID_v1.h>
+
+double Setpoint ;
+double Input; 
+double Output ; 
+double Kp=0, Ki=10, Kd=0; 
+ 
+PID myPID(&Input, &Output, &Setpoint, Kp, Ki, Kd, DIRECT);
+ 
+void setup()
+{
+  Serial.begin(9600);   
+  Setpoint = 75;
+  
+  myPID.SetMode(AUTOMATIC);
+  myPID.SetTunings(Kp, Ki, Kd);
+}
+ 
+void loop()
+{
+  Input = map(analogRead(5), 0, 1024, 0, 255);  // connected phototransistor to A5
+  myPID.Compute();
+
+  analogWrite(3,Output); //pulse width modulation pin 3
+  
+  Serial.print(Input);
+  Serial.print(" ");
+  
+  Serial.println(Output);
+  Serial.print(" ");  
+  
+  Serial.println(Setpoint);
+  
+  delay(100); 
+  
+}
